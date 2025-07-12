@@ -20,7 +20,7 @@
 | Current | Action | Rationale |
 |---------|--------|-----------|
 | `data/leases/` | Keep as is (but LFS-tracked) | Real-world test data for parsing/valuation engine. |
-| `agile/` | Rename to `project-management/` | More intuitive for external collaborators. |
+| `project-management/` | (renamed from `agile/`) | Central hub for sprint boards, backlog, and plans. |
 | `docs/` | Split into `docs/processes/`, `docs/templates/`, `docs/lease-samples/` | Clearer navigation. |
 | `tools/` | Populate or remove stubs | Empty dirs can be confusing. |
 | `suggestions/` | Central place for meta-suggestions like this one | Keeps proposal docs out of sprint artifacts. |
@@ -52,4 +52,4 @@
    git push origin main
    ```
 
-*Feel free to break this into stories inside `agile/sprints/sprint-1-plan.md`.* 
+*Feel free to break this into stories inside `project-management/sprints/sprint-1-plan.md`.* 
