@@ -103,3 +103,38 @@
 ---
 
 Prepared by PM – 2025-07-12 
+
+---
+
+## Branching & PR Workflow (for Codex team)
+1. PM (Cursor) has created ticket **SP4**. Codex must create **four draft branches** from `main`:  
+   `sp4-v1`, `sp4-v2`, `sp4-v3`, `sp4-v4` (one per team member).  
+2. Each branch must implement the full sprint scope independently. Use the folder `tools/python/` and avoid touching shared infra except as documented.
+3. Open **four separate pull requests** targeting `main` and label them `codex-draft`.
+4. After pushing, run the `/review` command to trigger AI code-review bots.
+5. Once reviews are posted, **do not merge**. PM/planner will cherry-pick the best fragments into an integration branch.
+
+### Post-Sprint Consolidation
+- Planner meta-agent (or PM) will create `sp4-merge` branch, cherry-pick from the four drafts, and open a final PR to `main`.
+- All original draft PRs will then be closed.
+
+---
+
+## Sprint Review Deliverables (per team member)
+Each Codex contributor must add a **200-word** review file under `project-management/sprint-reviews/`:
+
+```
+project-management/sprint-reviews/sprint-4-review-<initials>.md
+```
+
+Template:
+```
+# Sprint 4 Review – <Name / Initials>
+
+*What went well*
+*What could be improved*
+*Key quantitative evidence (test coverage %, parse accuracy, etc.)*
+*Next-step recommendation*
+```
+
+> Reviews must be committed on the same branch that contains the code they refer to. 
