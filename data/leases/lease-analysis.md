@@ -101,3 +101,63 @@
 - ✅ Size range (37 acres to 1,150 acres)
 
 **Ready for Sprint 2**: Build Excel calculator using these validated real-world terms!
+
+## NEW DOCUMENTS ADDED (Initial Triage – Details TBD)
+
+| Filename | Preliminary Notes | Next‐Step Action |
+|----------|-------------------|------------------|
+| **25I0955-Ground Lease – final version.pdf** | Title metadata indicates a *Ground Lease* dated 2017 with “CW Comments”. No obvious solar keywords. Could be generic land lease or another asset class. | Open PDF, search for *solar*, *photovoltaic*, or MW references. If unrelated, move to `data/archive/`. |
+| **Enxco-Wind-Farm-Lease.pdf** | Likely a wind‐farm ground lease (enXco was acquired by EDF Renewables). Useful precedent for renewable land deals even if not solar. | Extract acreage, rent, term, and escalators; tag as *wind*. |
+| **RR22-0640 Request for Ordinance_Solar IX Land Lease.pdf** | Appears to be a *city or county ordinance request* for a solar land lease (“Solar IX”). May include draft lease terms and ordinance language. | Confirm if executed lease is attached; if only ordinance memo, classify as *supporting doc* not *lease*. |
+
+👉 **Action:** During Sprint 3’s PDF→JSON prototype, focus on parsing at least one of these new documents (preferably *Solar IX*) to validate the extraction pipeline on fresh data.
+
+---
+
+## Proposed Pandas Visualization Workflow
+
+Below is a minimal script outline that reads a hand-crafted `leases.json` (or CSV) file and outputs a tidy DataFrame side-by-side:
+
+```python
+import pandas as pd
+
+data = [
+    {
+        "file": "Lanceleaf Solar_Land Lease Agreement.pdf",
+        "state": "IL",
+        "acres": 36.8,
+        "annual_rent": 95680,
+        "rent_per_acre": 2600,
+        "escalator_pct": 2.5,
+        "term_years": 25,
+        "counterparty": "Lanceleaf Solar",
+    },
+    # … add entries for KY, WY, etc.
+]
+
+leases = pd.DataFrame(data)
+
+cols_to_show = [
+    "file",
+    "state",
+    "acres",
+    "annual_rent",
+    "rent_per_acre",
+    "escalator_pct",
+    "term_years",
+]
+print(leases[cols_to_show].to_markdown(index=False))
+```
+
+Output example:
+
+| file | state | acres | annual_rent | rent_per_acre | escalator_pct | term_years |
+|------|-------|-------|-------------|---------------|---------------|------------|
+| Lanceleaf Solar_Land Lease Agreement.pdf | IL | 36.8 | 95,680 | 2,600 | 2.5 | 25 |
+
+**Why this approach?**
+• **Transparent:** Data lives in plain JSON/CSV that can be audited alongside sources.  
+• **Re-usable:** Same structure feeds directly into `lease_valuation.py` for PV calculations.  
+• **Lightweight:** No database overhead; perfect for early-stage analysis.
+
+Once the extraction pipeline can spit out a JSON for each PDF, you can auto-concatenate them into this DataFrame for instant comparison.
