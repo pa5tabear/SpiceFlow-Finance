@@ -60,3 +60,28 @@
 ---
 
 *Prepared by: AI code-review assistant* 
+
+---
+
+## 5. How Sprint 3 Should Change Now That a Python Valuation Engine Exists
+
+> **Heads-up Claude:** a lightweight engine has been committed at `tools/python/lease_valuation.py`. It covers escalators, custom schedules and balloon costs in <100 LOC.
+
+### Recommended Plan Adjustments
+1. **Replace “convert CSV ➜ polished XLSX” as the *primary* dev task.**  
+   Instead, position the Python module as the core engine and scope XLSX work to a thin, optional front-end (e.g., xlwings button or manual export).
+2. **Add a story: “Expose `lease_valuation.py` via CLI & unit tests.”**  
+   • `python -m lease_valuation --input sample.json` → prints PV & offer.  
+   • Pytest file with at least 3 fixture cases (Illinois, Wyoming, Kentucky).
+3. **Automate scenario validation.**  
+   Drop the hand-maintained `validation_results.csv`; generate it from the Python script (`--batch tests/test_cases.csv`).
+4. **Documentation update.**  
+   README section: how to call the valuation engine, where to change discount-rate YAML, how to regenerate results.
+5. **Tech-debt removal.**  
+   Once the Python flow is stable, delete the interim `spiceflow-calculator-v1-improved.csv` and scripts that only serve the CSV path.
+6. **Stretch goal:** wrap the engine in a Streamlit micro-app for an interactive demo (inputs on the left, results on the right) – faster than full Excel polish.
+
+### Re-prioritised Sprint 3 Objective
+> “Deliver an automated, test-covered Python valuation engine with an optional Excel or web front-end, producing competitive offers in line with industry multiples.”
+
+This keeps the sprint bite-sized while delivering something developers can extend and stakeholders can still view (via Streamlit or exported XLSX). 
