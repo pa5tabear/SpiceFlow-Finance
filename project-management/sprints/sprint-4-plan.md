@@ -22,6 +22,7 @@
 *Acceptance Criteria*
 - CLI accepts single PDF path and output JSON path.
 - Extracts (at minimum) `annual_rent`, `acres`, `escalator_pct`, `term_years`.
+- **No hallucination:** if a field is not present verbatim in the document, it must be omitted or set to `null`—never estimated or back-filled.
 - Accuracy within ±1 % of hand-checked values.
 
 ---
@@ -61,8 +62,14 @@
 
 ---
 
-### Stretch – Interactive Demo (optional if time remains)
+### Stretch A – Interactive Demo (optional)
 - Simple Streamlit page that uploads a PDF and displays JSON + buy-out.
+
+### Stretch B – Credit-Risk Quick-Score (optional)
+- Bash/python script `credit_lookup.py lessee_name` that:
+   1. Performs a quick web search (SEC, state corp filings) for the lessee entity.
+   2. Returns simple heuristic flags: *public-company*, *SPV age*, presence of *parent guarantee* keywords.
+- Result stored as `credit_score` field in the JSON (null if not found).
 
 ---
 
