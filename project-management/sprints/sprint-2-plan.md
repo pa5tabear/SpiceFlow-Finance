@@ -1,4 +1,6 @@
-# Sprint 2 Plan - MVP Excel Calculator
+# [DEPRECATED] Sprint 2 Plan – Superseded by Python Pipeline
+
+> NOTE: This historical plan referenced an Excel-based calculator. The project has since migrated to a pure-Python valuation engine. Keep for archive only.
 
 **Duration:** 2 days  
 **Goal:** Build working Excel calculator using real Illinois Lanceleaf lease data

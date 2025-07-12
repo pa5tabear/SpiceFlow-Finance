@@ -1,0 +1,11 @@
+{
+  "name": "Wyoming Sailor Solar",
+  "annual_rent": 230000,
+  "term_years": 25,
+  "escalator": 0.015,
+  "risk_tier": "low",
+  "location": "Albany County, Wyoming", 
+  "acres": 1150,
+  "developer": "Boulevard Associates, LLC",
+  "landowner": "City of Laramie"
+}

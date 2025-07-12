@@ -14,7 +14,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
 
 **Outcome**: Lightweight but repeatable deal-evaluation stack
 
-- [ ] **Excel Cash-Flow Model**
+- [ ] **Python Cash-Flow Model**
   - Build single-table lease NPV calculator
   - Inputs: remaining term, escalator rates, discount rate
   - Output: Current value and maximum offer price
@@ -41,7 +41,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
   
 - [ ] **Landowner Materials**
   - Create "Why Cash Beats 30 Years of Rent" explainer
-  - Include IRR comparison tables (Excel → PDF export)
+  - Include IRR comparison tables (Markdown table export)
   - Prepare customizable LOI template with $ blanks for real-time editing
 
 ### Phase 2: Landowner Meeting (Day 0)
@@ -68,7 +68,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
   - Order title search via API integration
   
 - [ ] **Due Diligence Updates**  
-  - Update Excel model with any discovered lease amendments
+  - Update Python valuation logic with any discovered lease amendments
   - Weekly polite follow-ups on outstanding documents
   - Mark LOI "executed" once countersigned
 
@@ -82,7 +82,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
   
 - [ ] **Data Room Assembly**
   - Populate with: LOI, lease, title, environmental screen, parcel map
-  - Generate Excel → PDF cash-flow waterfall with DSCR charts
+  - Generate Markdown/Pandas cash-flow waterfall with DSCR charts
   
 - [ ] **Bank Engagement**
   - Schedule 30-min presentation call
@@ -125,7 +125,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
 
 | Need | Tool Now | When to Upgrade |
 |------|----------|-----------------|
-| Financial Modeling | Excel (universal access) | Python + xlwings at 20+ deals/month |
+| Financial Modeling | Python (universal access via CLI) | Python + REST API at scale |
 | Bulk Data Processing | Python + Jupyter | Airflow + PostGIS at 100+ parcels/week |
 | Document Extraction | GPT-4 via LangChain | Fine-tuned model after 1,000 parsed leases |
 | CRM/Pipeline | Notion + Zapier | HubSpot/DealCloud when team > 5 |
@@ -153,7 +153,7 @@ SpiceFlow Finance specializes in purchasing existing solar ground leases from la
 ```
 SpiceFlow Finance/
 ├── models/
-│   ├── excel/           # Financial models and calculators
+│   ├── python/          # Valuation engine and helpers
 │   ├── python/          # Jupyter notebooks and scripts
 │   └── templates/       # LOI, credit memo, agreement templates
 ├── data/
