@@ -3,7 +3,8 @@
 ## Epic 1: Core Valuation Engine
 **Goal:** Professional-grade lease valuation system
 
-### Sprint 2-3: Enhanced Calculator
+### Sprint 2-3: Enhanced Python Calculator *(core engine)*
+*Note: UI layers (Excel, Streamlit, etc.) are intentionally **out of scope** until the Python engine is fully validated.*
 - [ ] Add annual escalator rates (1-3%)
 - [ ] Include percentage rent calculations
 - [ ] Add early termination scenarios
