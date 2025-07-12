@@ -1,53 +1,43 @@
-# Sprint 1 Plan - MVP Calculator
-**Duration:** 3 days  
-**Goal:** Single Excel file that can calculate a buyout offer in under 2 minutes
+# Sprint 1 Plan - Find Real Solar Lease Document
+**Duration:** 1 day  
+**Goal:** Download and analyze SEC filing ground lease agreement (real public company deal)
 
 ## Sprint Goal
-Create the absolute minimum viable product - one Excel file that takes 3 inputs and produces a buyout offer number that we can test with 1 real landowner.
+Find and download a real-world solar ground lease document (not a template) that we can use to understand actual lease terms and build our valuation model from reality.
 
-## User Stories (Sprint 1 Only)
+## Single User Story
 
-### Story 1: Basic NPV Calculator
+### Story 1: Real Lease Document Acquisition
 **As a** SpiceFlow analyst  
-**I want** to input lease details and get an NPV  
-**So that** I can quickly estimate what a lease is worth
+**I want** to find and download an actual executed solar ground lease  
+**So that** I can build my valuation model based on real-world terms instead of guessing
 
 **Acceptance Criteria:**
-- [ ] Excel file with 3 input cells: Annual Rent, Years Remaining, Risk Tier
-- [ ] Dropdown for Risk Tier (Low/Medium/High)
-- [ ] Automatic discount rate selection (7%/10%/15%)
-- [ ] NPV calculation using standard formula
-- [ ] Single output: "Maximum Offer" (80% of NPV)
+- [ ] Find actual executed solar lease document (county records, SEC filing, or court case)
+- [ ] Download PDF/document file to `/docs/lease-samples/` directory
+- [ ] Extract key financial terms: annual rent, lease duration, escalators, termination clauses
+- [ ] Document source and credibility of the lease agreement
+- [ ] Create summary of terms for model building
 
-### Story 2: Simple Sensitivity Table
-**As a** SpiceFlow analyst  
-**I want** to see how discount rates affect the offer  
-**So that** I can understand the impact of risk assessment
-
-**Acceptance Criteria:**
-- [ ] Data table showing NPV at 6%, 8%, 10%, 12%, 15% discount rates
-- [ ] All calculations automatically update when inputs change
+## Search Strategy
+1. **County deed records** - Look for recorded solar lease agreements
+2. **SEC filings** - Public company exhibits with real lease agreements  
+3. **Court cases** - Litigation often includes full lease documents as exhibits
+4. **State/federal land leases** - BLM, state land board executed agreements
+5. **Municipal records** - City/county solar projects with public lease agreements
 
 ## Definition of Done
-- [ ] Excel file opens and calculates correctly
-- [ ] Can input Missouri lease data and get reasonable output
-- [ ] Tested with at least 1 sample calculation
-- [ ] File saved in `/tools/excel/` directory
+- [ ] One real solar lease document downloaded and saved
+- [ ] Key terms extracted and documented
+- [ ] Source credibility verified
+- [ ] File properly organized in project structure
 
-## Sprint Backlog
-1. Create Excel file structure (30 min)
-2. Build NPV formula with risk-based discount rates (45 min)
-3. Add sensitivity analysis table (30 min)
-4. Test with sample data (15 min)
-
-## Demo Criteria
-- Input: $50K annual rent, 20 years remaining, Medium risk
-- Expected Output: ~$426K maximum offer (NPV ~$532K at 10% discount)
-
-## Sprint Review Questions
-1. Can we generate a buyout offer in under 2 minutes?
-2. Do the numbers feel reasonable compared to industry standards?
-3. Is this sufficient for initial landowner conversation?
+## Success Criteria
+We have an actual lease document (not a template) that shows:
+- Specific dollar amounts for annual rent
+- Actual lease duration and escalation terms
+- Real developer/landowner names (can be redacted)
+- Executed signatures or evidence of being a final agreement
 
 ---
-*Next Sprint Preview: Add escalators, create basic LOI template*
+*Next Sprint: Build Excel calculator using the real lease terms we find*

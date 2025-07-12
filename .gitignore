@@ -1,0 +1,16 @@
+# macOS system files
+.DS_Store
+
+# Editor settings
+.vscode/
+.idea/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Node modules (if added later)
+node_modules/ 
