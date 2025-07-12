@@ -1,10 +1,6 @@
-# SpiceFlow Finance - Sprint Reviews
-
-*Honest assessments of sprint progress, challenges, and learnings*
-
----
-
 # Sprint 1 Review - Real Solar Lease Document Acquisition
+
+*Honest assessment of sprint progress, challenges, and learnings*
 
 **Sprint Goal**: Find and download one real executed solar ground lease document  
 **Duration**: 1 day  
@@ -175,14 +171,3 @@
 
 **Bottom Line**: Sprint 1 delivered more real-world data than expected but exposed the complexity and variation in solar lease markets. We have sufficient validated data to build an initial valuation model, but need broader market coverage and automation for a scalable business approach.
 
----
-
-# Sprint 2 Review - [TO BE COMPLETED]
-
-*Excel Calculator Development*
-
----
-
-# Sprint 3 Review - [TO BE COMPLETED]
-
-*Model Validation and Testing*
