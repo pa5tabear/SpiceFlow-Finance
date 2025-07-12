@@ -150,14 +150,12 @@ if __name__ == "__main__":
     calculator = create_spiceflow_calculator()
     scenarios = create_test_scenarios()
     
-    # Save to CSV (can be opened in Excel)
-    calculator.to_csv('/Users/mattkirsch/SpiceFlowFinance/tools/excel/spiceflow-calculator-v1-improved.csv', 
-                     index=False, header=False)
-    
-    scenarios.to_csv('/Users/mattkirsch/SpiceFlowFinance/tools/excel/test-scenarios.csv', 
-                    index=False)
+    # Save to Markdown for easier version control
+    calculator.to_markdown('tools/excel/spiceflow-calculator-v1.md', index=False)
+
+    scenarios.to_markdown('tools/excel/test-scenarios.md', index=False)
     
     print("✅ SpiceFlow Calculator created successfully!")
     print("📁 Files saved to /tools/excel/")
-    print("📊 Open spiceflow-calculator-v1-improved.csv in Excel")
-    print("🧪 Test with scenarios from test-scenarios.csv")
+    print("📊 Open spiceflow-calculator-v1.md to view the table")
+    print("🧪 Test with scenarios from test-scenarios.md")

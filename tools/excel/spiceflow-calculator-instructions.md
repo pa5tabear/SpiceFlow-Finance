@@ -1,15 +1,14 @@
 # SpiceFlow Finance NPV Calculator - Instructions
 
-## File: spiceflow-calculator-v1.csv
+## File: spiceflow-calculator-v1.md
 
-This CSV file can be opened in Excel, Google Sheets, or any spreadsheet application.
+This Markdown file can be viewed in any text editor or GitHub viewer.
 
 ## How to Use:
 
-### Step 1: Open in Excel
-1. Download the CSV file
-2. Open in Excel/Google Sheets
-3. The formulas will automatically calculate
+### Step 1: View the Markdown table
+1. Generate the file using `create_calculator.py`
+2. Open `spiceflow-calculator-v1.md` in your editor or browser
 
 ### Step 2: Input Your Lease Data
 **Cell B4**: Annual Base Rent (in dollars)
@@ -18,9 +17,9 @@ This CSV file can be opened in Excel, Google Sheets, or any spreadsheet applicat
 **Cell B5**: Years Remaining on Lease
 - Example: 23 (typical remaining term)
 
-**Cell B6**: Annual Escalator Percentage  
+**Cell B6**: Annual Escalator Percentage
 - Example: 2.5% (Illinois Lanceleaf rate)
-- Format as percentage in Excel
+- Format as a percentage if editing manually
 
 **Cell B7**: Risk Tier (Manual Selection)
 - Type: "Low", "Medium", or "High"

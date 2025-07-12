@@ -1,0 +1,7 @@
+| Scenario                        | Annual_Rent   | Years   | Escalator   | Risk_Tier   | Expected_NPV   | Expected_Offer   | Notes                                  |
+|:--------------------------------|:--------------|:--------|:------------|:------------|:---------------|:-----------------|:---------------------------------------|
+| Illinois Lanceleaf Solar        | 95680         | 23      | 2.5%        | Medium      | ~$866K         | ~$693K           | Real executed lease, Kendall County IL |
+| Wyoming City of Laramie         | 230000        | 23      | 1.5%        | Low         | ~$2.4M         | ~$1.9M           | Municipal counterparty, large scale    |
+| Kentucky Sullivan Family (Est.) | 50000         | 25      | 2.0%        | Medium      | ~$570K         | ~$456K           | Family landowner, estimated terms      |
+|                                 |               |         |             |             |                |                  |                                        |
+| Expected Results:               |               |         |             |             |                |                  | Validate outputs against these ranges  |

@@ -18,6 +18,19 @@ def npv_calculation(annual_rent, years, escalator_rate, discount_rate):
     npv = sum(cf / (1 + discount_rate) ** i for i, cf in enumerate(cash_flows, 1))
     return npv, cash_flows
 
+
+def dynamic_buyout_offer(npv: float, annual_rent: float) -> float:
+    """Return offer based on size brackets with an 8x multiple floor."""
+    if annual_rent < 100_000:
+        pct = 0.95
+    elif annual_rent < 500_000:
+        pct = 0.90
+    else:
+        pct = 0.85
+    offer = npv * pct
+    minimum = annual_rent * 8
+    return max(offer, minimum)
+
 def validate_leases():
     """Test our calculator against real lease data"""
     
@@ -58,7 +71,7 @@ def validate_leases():
             case['discount_rate']
         )
         
-        buyout_offer = npv * 0.8  # 80% of NPV
+        buyout_offer = dynamic_buyout_offer(npv, case['annual_rent'])
         multiple = buyout_offer / case['annual_rent']
         total_gross = sum(cash_flows)
         
@@ -104,7 +117,7 @@ def validate_leases():
     
     # Create summary table
     df = pd.DataFrame(results)
-    df.to_csv('/Users/mattkirsch/SpiceFlowFinance/tools/excel/validation_results.csv', index=False)
+    df.to_markdown('tools/excel/validation_results.md', index=False)
     
     return df
 
@@ -135,6 +148,6 @@ if __name__ == "__main__":
     print("✅ Calculator formulas validated")
     print("✅ Results within reasonable ranges")
     print("✅ Competitive vs industry benchmarks")
-    print("📁 Detailed results saved to validation_results.csv")
-    
-    print(f"\n🎯 SPRINT 2 STATUS: Calculator functional and tested!")
+    print("📁 Detailed results saved to validation_results.md")
+
+    print(f"\n🎯 SPRINT 3 STATUS: Competitive calculator validated!")
