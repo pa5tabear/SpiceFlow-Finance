@@ -96,6 +96,12 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
                 continue
     
     # Extract term years
+    number_words = {
+        'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10,
+        'eleven':11,'twelve':12,'thirteen':13,'fourteen':14,'fifteen':15,'sixteen':16,'seventeen':17,
+        'eighteen':18,'nineteen':19,'twenty':20,'thirty':30,'forty':40,'fifty':50,'sixty':60
+    }
+
     term_patterns = [
         r'for\s+([0-9]+)\s+years?',                 # "for 25 years"
         r'term.*?([0-9]+)\s+years?',
@@ -107,17 +113,50 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
         r'([0-9]+)\s+years?.*?term',
         r'commencing.*?([0-9]+)\s+years?',
         r'lease.*?([0-9]+)\s+years?.*?period',
-        r'expires.*?([0-9]+)\s+years?'
+        r'expires.*?([0-9]+)\s+years?',
+        r'(' + '|'.join(number_words.keys()) + r')\s*\([0-9]+\)?\s+years?',  # word (digit)
+        r'(' + '|'.join(number_words.keys()) + r')\s+years?',
     ]
-    
+
+    renewal_pattern = r'([0-9]+)\s+renewal\s+terms?\s+of\s+([0-9]+)\s+years?'
+
+    term_candidates = []
+
     for pattern in term_patterns:
-        match = re.search(pattern, text_clean)
-        if match:
-            try:
-                lease_data["term_years"] = int(match.group(1))
-                break
-            except ValueError:
-                continue
+        for m in re.finditer(pattern, text_clean):
+            val = m.group(1)
+            years_val = None
+            if val.isdigit():
+                years_val = int(val)
+            else:
+                years_val = number_words.get(val.lower(), None)
+            if years_val:
+                term_candidates.append(years_val)
+
+    # renewal matches
+    renewal_match = re.search(renewal_pattern, text_clean)
+    total_term_from_renewal = None
+    if renewal_match:
+        try:
+            renew_count = int(renewal_match.group(1))
+            renew_years = int(renewal_match.group(2))
+            if term_candidates:
+                initial_term = max(term_candidates)
+            else:
+                initial_term = renew_years  # fallback
+            total_term_from_renewal = initial_term + renew_count * renew_years
+            term_candidates.append(total_term_from_renewal)
+        except ValueError:
+            pass
+
+    if term_candidates:
+        lease_data["term_years"] = max(term_candidates)
+
+    # Flag suspiciously low term
+    if lease_data.get("term_years") and lease_data["term_years"] < 10:
+        lease_data["needs_review"] = True
+    else:
+        lease_data["needs_review"] = False
     
     # Extract escalator percentage
     escalator_patterns = [
