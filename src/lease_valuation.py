@@ -7,10 +7,10 @@ Usage
 ...     annual_rent=95680,
 ...     term_years=23,
 ...     escalator=0.025,
-...     discount_rate=0.12,
+...     discount_rate=0.10,
 ...     buyout_pct=0.80,
 ... )
-800123.42
+870677.54
 
 The module is intentionally <100 lines so it can be audited quickly.
 """
@@ -67,7 +67,7 @@ def present_value(cash_flows: np.ndarray, discount_rate: float) -> float:
     cash_flows
         1-D array where index 0 is first year’s cash flow.
     discount_rate
-        Decimal discount rate (e.g. 0.12 for 12 %).
+        Decimal discount rate (e.g. 0.10 for 10 %).
     """
     years = np.arange(1, len(cash_flows) + 1)
     discount_factors = 1 / (1 + discount_rate) ** years
@@ -79,7 +79,7 @@ def pv_buyout(
     annual_rent: float,
     term_years: int,
     escalator: float = 0.0,
-    discount_rate: float = 0.12,
+    discount_rate: float = 0.10,
     buyout_pct: float = 0.80,
     custom_escalators: Sequence[float] | None = None,
     balloon_cost: float = 0.0,

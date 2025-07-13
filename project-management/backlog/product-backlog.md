@@ -8,8 +8,8 @@
 *Note: UI layers (Excel, Streamlit, etc.) are intentionally **out of scope** until the Python engine is fully validated.*
 - [ ] Add annual escalator rates (1-3%)
 - [ ] Include percentage rent calculations
-- [ ] Add early termination scenarios
-- [ ] Create printable PDF output
+
+
 
 ### Risk Assessment Framework
 - [ ] 3-tier risk scoring system

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Rr22-0640 Request For Ordinance Solar Ix Land Lease",
+    "annual_rent": 1463785,
+    "term_years": 25,
+    "escalator": 0.02,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "Border",
+    "acres": 64.0,
+    "developer": null,
+    "pv_value": 15526708.41,
+    "buyout_offer": 13197702.15,
+    "multiple": 9.0,
+    "credit_assessment": {}
+  },
+  {
+    "name": "8568",
+    "annual_rent": 1,
+    "term_years": 6,
+    "escalator": 0.02,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "Wyoming",
+    "acres": 1300.0,
+    "developer": "Agrees To Release, Indemnify, Defend, And Hold Harmless The City And Its Officers, Agents, Employees, Successors And Assigns From Any Claims, Demands, Causes Of Action, Damages, Judgments Or Other Liabilities, Inc",
+    "pv_value": 4.55,
+    "buyout_offer": 3.87,
+    "multiple": 3.9,
+    "credit_assessment": {}
+  },
+  {
+    "name": "25I0955-Ground Lease - Final Version",
+    "annual_rent": 3500,
+    "term_years": 5,
+    "escalator": 0.18,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "Land",
+    "acres": 82.33,
+    "developer": null,
+    "pv_value": 18397.65,
+    "buyout_offer": 15638.0,
+    "multiple": 4.5,
+    "credit_assessment": {}
+  },
+  {
+    "name": "Lanceleaf Solar Land Lease Agreement",
+    "annual_rent": 1000000,
+    "term_years": 1,
+    "escalator": 0.025,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "State",
+    "acres": 36.8,
+    "developer": null,
+    "pv_value": 909090.91,
+    "buyout_offer": 772727.27,
+    "multiple": 0.8,
+    "credit_assessment": {}
+  }
+]
