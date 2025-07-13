@@ -2,6 +2,8 @@
   {
     "name": "Rr22-0640 Request For Ordinance Solar Ix Land Lease",
     "annual_rent": 1463785,
+    "annual_rent_per_acre": 22871.64,
+    "total_annual_rent": 1463785,
     "term_years": 25,
     "escalator": 0.02,
     "risk_tier": "medium",
@@ -18,6 +20,8 @@
   {
     "name": "8568",
     "annual_rent": 260000,
+    "annual_rent_per_acre": 200.0,
+    "total_annual_rent": 260000,
     "term_years": 6,
     "escalator": 0.02,
     "risk_tier": "medium",
@@ -34,6 +38,8 @@
   {
     "name": "25I0955-Ground Lease - Final Version",
     "annual_rent": 3500,
+    "annual_rent_per_acre": 42.51,
+    "total_annual_rent": 3500,
     "term_years": 5,
     "escalator": 0.18,
     "risk_tier": "medium",
@@ -50,6 +56,8 @@
   {
     "name": "Lanceleaf Solar Land Lease Agreement",
     "annual_rent": 1000000,
+    "annual_rent_per_acre": 27173.91,
+    "total_annual_rent": 1000000,
     "term_years": 1,
     "escalator": 0.025,
     "risk_tier": "medium",

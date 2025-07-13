@@ -33,6 +33,7 @@ from credit_lookup import quick_lookup
 class LeaseResult:
     name: str
     annual_rent: float
+    annual_rent_per_acre: float | None
     term_years: int
     escalator: float
     risk_tier: str
@@ -110,6 +111,7 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
     return LeaseResult(
         name=data.get('name', file_path.stem),
         annual_rent=data['annual_rent'],
+        annual_rent_per_acre=(data['annual_rent'] / data['acres']) if data.get('acres') else None,
         term_years=data['term_years'],
         escalator=data.get('escalator', 0.0),
         risk_tier=risk_tier,
@@ -129,12 +131,13 @@ def generate_summary_table(results: List[LeaseResult], output_path: Path):
     """Generate Markdown summary table."""
     with open(output_path, 'w') as f:
         f.write("# Lease Portfolio Summary\n\n")
-        f.write("| Name | Annual Rent | Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Multiple |\n")
-        f.write("|------|-------------|------|-----------|-----------|---------------|----------|-------|-----------|------------------|--------------|------------------|----------|\n")
+        f.write("| Name | Annual Rent / Acre | Total Annual Rent | Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Multiple |\n")
+        f.write("|------|--------------------|------------------|------|-----------|-----------|---------------|----------|-------|-----------|------------------------------|--------------|------------------|----------|\n")
         for r in results:
             competitive = "🟢" if r.multiple >= 8.0 else "🟡"
+            rent_per_acre_display = f"${r.annual_rent_per_acre:,.2f}" if r.annual_rent_per_acre else "—"
             f.write(
-                f"| {r.name} | ${r.annual_rent:,} | {r.term_years}y | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.undiscounted_value:,.0f} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple:.1f}x |\n")
+                f"| {r.name} | {rent_per_acre_display} | ${r.annual_rent:,} | {r.term_years}y | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.undiscounted_value:,.0f} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple:.1f}x |\n")
         
         f.write(f"\n## Portfolio Totals\n")
         f.write(f"- **Total Investment**: ${sum(r.buyout_offer for r in results):,.0f}\n")
@@ -151,6 +154,8 @@ def generate_leases_json(results: List[LeaseResult], output_path: Path):
         lease_entry = {
             "name": r.name,
             "annual_rent": r.annual_rent,
+            "annual_rent_per_acre": round(r.annual_rent_per_acre, 2) if r.annual_rent_per_acre else None,
+            "total_annual_rent": r.annual_rent,
             "term_years": r.term_years,
             "escalator": r.escalator,
             "risk_tier": r.risk_tier,
