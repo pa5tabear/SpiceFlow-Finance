@@ -40,6 +40,7 @@ class LeaseResult:
     acres: float
     developer: str
     pv_value: float
+    undiscounted_value: float
     buyout_offer: float
     multiple: float
     discount_rate: float
@@ -69,8 +70,15 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         buyout_pct=0.85  # Updated from 80% to be more competitive
     )
     
-    # Calculate PV without buyout discount for analysis
+    # Calculate PV without buyout discount for analysis and undiscounted total rent
     pv_value = buyout_offer / 0.85
+    from lease_valuation import LeaseParams, generate_cash_flows
+    params_tmp = LeaseParams(
+        annual_rent=data['annual_rent'],
+        term_years=data['term_years'],
+        escalator=data['escalator']
+    )
+    undiscounted_value = float(generate_cash_flows(params_tmp).sum())
     multiple = buyout_offer / data['annual_rent']
     
     # Perform credit lookup if developer is available (for risk tier only)
@@ -96,6 +104,7 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         buyout_pct=0.85
     )
     pv_value = buyout_offer / 0.85
+    # undiscounted value remains the same
     multiple = buyout_offer / data['annual_rent']
     
     return LeaseResult(
@@ -108,6 +117,7 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         acres=data.get('acres', 0.0),
         developer=data.get('developer', 'Unknown'),
         pv_value=pv_value,
+        undiscounted_value=undiscounted_value,
         buyout_offer=buyout_offer,
         multiple=multiple,
         discount_rate=actual_discount_rate,
@@ -119,11 +129,12 @@ def generate_summary_table(results: List[LeaseResult], output_path: Path):
     """Generate Markdown summary table."""
     with open(output_path, 'w') as f:
         f.write("# Lease Portfolio Summary\n\n")
-        f.write("| Name | Annual Rent | Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | PV Value | **Buyout Offer** | Multiple |\n")
-        f.write("|------|-------------|------|-----------|-----------|---------------|----------|-------|-----------|----------|------------------|----------|\n")
+        f.write("| Name | Annual Rent | Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Multiple |\n")
+        f.write("|------|-------------|------|-----------|-----------|---------------|----------|-------|-----------|------------------|--------------|------------------|----------|\n")
         for r in results:
             competitive = "🟢" if r.multiple >= 8.0 else "🟡"
-            f.write(f"| {r.name} | ${r.annual_rent:,} | {r.term_years}y | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple:.1f}x |\n")
+            f.write(
+                f"| {r.name} | ${r.annual_rent:,} | {r.term_years}y | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.undiscounted_value:,.0f} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple:.1f}x |\n")
         
         f.write(f"\n## Portfolio Totals\n")
         f.write(f"- **Total Investment**: ${sum(r.buyout_offer for r in results):,.0f}\n")
@@ -147,7 +158,8 @@ def generate_leases_json(results: List[LeaseResult], output_path: Path):
             "location": r.location,
             "acres": r.acres,
             "developer": r.developer,
-            "pv_value": round(r.pv_value, 2),
+            "present_value": round(r.pv_value, 2),
+            "undiscounted_value": round(r.undiscounted_value, 2),
             "buyout_offer": round(r.buyout_offer, 2),
             "multiple": round(r.multiple, 1),
             "credit_assessment": r.credit_data

@@ -69,6 +69,7 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
     
     # Extract annual rent - look for dollar amounts with rent context
     rent_patterns = [
+        r'annual\s+rental\s+payment[:\s]+\$([0-9,]+)',
         r'annual\s+rent.*?\$([0-9,]+)',
         r'rent.*?\$([0-9,]+).*?per\s+year',
         r'\$([0-9,]+).*?annual',
@@ -150,6 +151,16 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
                 break
             except ValueError:
                 continue
+
+    # Check for rent expressed per acre (capture possibly multiple rates) and choose the highest
+    per_acre_rates = re.findall(r'\$([0-9]+(?:\.[0-9]+)?)\s+per\s+(?:utilized\s+)?acre', text_clean)
+    if per_acre_rates and lease_data.get("acres") and (lease_data.get("annual_rent") is None or lease_data["annual_rent"] <= 1000):
+        try:
+            rates_float = [float(r.replace(',', '')) for r in per_acre_rates]
+            rate = max(rates_float)
+            lease_data["annual_rent"] = int(rate * lease_data["acres"])
+        except ValueError:
+            pass
     
     # Extract location (state patterns)
     state_patterns = [
