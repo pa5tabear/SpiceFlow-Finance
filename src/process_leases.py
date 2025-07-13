@@ -27,6 +27,7 @@ sys.path.append('src')
 from lease_valuation import pv_buyout
 from document_extractor import process_document
 from credit_lookup import quick_lookup
+from manual_overrides import get_manual_override, should_skip_document, get_skip_reason
 
 
 @dataclass
@@ -35,6 +36,8 @@ class LeaseResult:
     annual_rent: float
     annual_rent_per_acre: float | None
     term_years: int
+    renewal_options: str | None
+    total_potential_term: int | None
     escalator: float
     risk_tier: str
     location: str
@@ -51,21 +54,49 @@ class LeaseResult:
 def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Optional[LeaseResult]:
     """Process a single lease document (PDF, DOCX, or JSON) and calculate buyout offer."""
     
-    # Extract data using document extractor
-    data = process_document(file_path)
+    # Check if document should be skipped
+    if should_skip_document(file_path.name):
+        print(f"⚠️  Skipping {file_path.name}: {get_skip_reason(file_path.name)}")
+        return None
+    
+    # Check for manual override first
+    manual_data = get_manual_override(file_path.name)
+    if manual_data:
+        print(f"📋 Using manual data for {file_path.name}")
+        data = manual_data.copy()
+    else:
+        # Extract data using document extractor
+        data = process_document(file_path)
+        print(f"🤖 Using automated extraction for {file_path.name}")
     
     if not data:
         return None
     
-    # Validate required fields
+    # Validate required fields and data quality
     if data.get('annual_rent') is None or data.get('term_years') is None:
         print(f"⚠️  Skipping {file_path.name}: missing annual_rent or term_years")
         return None
     
+    # Additional validation for data quality
+    if data.get('term_years', 0) > 50:
+        print(f"⚠️  Skipping {file_path.name}: unreasonable term ({data.get('term_years')} years)")
+        return None
+    
+    if data.get('annual_rent', 0) > 10000000:
+        print(f"⚠️  Skipping {file_path.name}: unreasonable rent (${data.get('annual_rent'):,})")
+        return None
+    
+    if data.get('escalator', 0) > 0.1:  # 10%
+        print(f"⚠️  Skipping {file_path.name}: unreasonable escalator ({data.get('escalator')*100:.1f}%)")
+        return None
+    
+    # Use total potential term if available for valuation, otherwise base term
+    valuation_term = data.get('total_potential_term') or data['term_years']
+    
     # Calculate buyout using existing valuation engine
     buyout_offer = pv_buyout(
         annual_rent=data['annual_rent'],
-        term_years=data['term_years'],
+        term_years=valuation_term,
         escalator=data['escalator'],
         discount_rate=discount_rate,
         buyout_pct=0.85  # Updated from 80% to be more competitive
@@ -80,7 +111,8 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         escalator=data['escalator']
     )
     undiscounted_value = float(generate_cash_flows(params_tmp).sum())
-    multiple = buyout_offer / data['annual_rent']
+    # Simple multiple for reference (not used in main comparison)
+    simple_multiple = buyout_offer / data['annual_rent']
     
     # Perform credit lookup if developer is available (for risk tier only)
     credit_data = {}
@@ -96,23 +128,26 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         except Exception as e:
             print(f"⚠️  Credit lookup failed for {data.get('developer')}: {e}")
     
-    # Recalculate with fixed 10% discount rate
+    # Recalculate with fixed 10% discount rate using valuation term
     buyout_offer = pv_buyout(
         annual_rent=data['annual_rent'],
-        term_years=data['term_years'],
+        term_years=valuation_term,
         escalator=data['escalator'],
         discount_rate=actual_discount_rate,
         buyout_pct=0.85
     )
     pv_value = buyout_offer / 0.85
-    # undiscounted value remains the same
-    multiple = buyout_offer / data['annual_rent']
+    # Calculate annualized return instead of simple multiple
+    # IRR approximation: (PV / Investment)^(1/years) - 1
+    annualized_return = (pv_value / buyout_offer) ** (1/valuation_term) - 1
     
     return LeaseResult(
         name=data.get('name', file_path.stem),
         annual_rent=data['annual_rent'],
         annual_rent_per_acre=(data['annual_rent'] / data['acres']) if data.get('acres') else None,
         term_years=data['term_years'],
+        renewal_options=data.get('renewal_options'),
+        total_potential_term=data.get('total_potential_term'),
         escalator=data.get('escalator', 0.0),
         risk_tier=risk_tier,
         location=data.get('location', 'Unknown'),
@@ -121,7 +156,7 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         pv_value=pv_value,
         undiscounted_value=undiscounted_value,
         buyout_offer=buyout_offer,
-        multiple=multiple,
+        multiple=annualized_return,
         discount_rate=actual_discount_rate,
         credit_data=credit_data
     )
@@ -131,17 +166,20 @@ def generate_summary_table(results: List[LeaseResult], output_path: Path):
     """Generate Markdown summary table."""
     with open(output_path, 'w') as f:
         f.write("# Lease Portfolio Summary\n\n")
-        f.write("| Name | Annual Rent / Acre | Total Annual Rent | Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Multiple |\n")
-        f.write("|------|--------------------|------------------|------|-----------|-----------|---------------|----------|-------|-----------|------------------------------|--------------|------------------|----------|\n")
+        f.write("| Name | Annual Rent / Acre | Total Annual Rent | Base Term | Renewals | Total Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Ann. Return |\n")
+        f.write("|------|--------------------|------------------|-----------|----------|------------|-----------|-----------|---------------|----------|-------|-----------|------------------------------|--------------|------------------|----------|\n")
         for r in results:
-            competitive = "🟢" if r.multiple >= 8.0 else "🟡"
+            # Competitive if annualized return > 6% (reasonable target vs 10% discount rate)
+            competitive = "🟢" if r.multiple >= 0.06 else "🟡"
             rent_per_acre_display = f"${r.annual_rent_per_acre:,.2f}" if r.annual_rent_per_acre else "—"
+            renewals_display = r.renewal_options if r.renewal_options else "—"
+            total_term_display = f"{r.total_potential_term}y" if r.total_potential_term else f"{r.term_years}y"
             f.write(
-                f"| {r.name} | {rent_per_acre_display} | ${r.annual_rent:,} | {r.term_years}y | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.undiscounted_value:,.0f} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple:.1f}x |\n")
+                f"| {r.name} | {rent_per_acre_display} | ${r.annual_rent:,} | {r.term_years}y | {renewals_display} | {total_term_display} | {r.escalator*100:.1f}% | {r.risk_tier.title()} | {r.discount_rate*100:.0f}% | {r.location} | {r.acres:,.0f} | {r.developer} | ${r.undiscounted_value:,.0f} | ${r.pv_value:,.0f} | **${r.buyout_offer:,.0f}** | {competitive} {r.multiple*100:.1f}% |\n")
         
         f.write(f"\n## Portfolio Totals\n")
         f.write(f"- **Total Investment**: ${sum(r.buyout_offer for r in results):,.0f}\n")
-        f.write(f"- **Average Multiple**: {sum(r.multiple for r in results) / len(results):.1f}x\n")
+        f.write(f"- **Average Annualized Return**: {sum(r.multiple for r in results) / len(results)*100:.1f}%\n")
         f.write(f"- **Total Annual Rent**: ${sum(r.annual_rent for r in results):,.0f}\n")
         f.write(f"- **Total Acres**: {sum(r.acres for r in results):,.0f}\n")
 
@@ -196,7 +234,7 @@ SpiceFlow Finance has evaluated **{len(results)} solar ground leases** represent
 
 ## Key Financial Metrics
 
-**Average Purchase Multiple:** {avg_multiple:.1f}x annual rent  
+**Average Annualized Return:** {avg_multiple*100:.1f}%  
 **Total Portfolio Value:** ${sum(r.pv_value for r in results):,.0f} (NPV)  
 **Recommended Offers:** ${total_buyouts:,.0f} (85% of NPV)  
 **Weighted Term:** {sum(r.term_years * r.annual_rent for r in results) / total_annual_rent:.1f} years average
@@ -209,9 +247,9 @@ SpiceFlow Finance has evaluated **{len(results)} solar ground leases** represent
     sorted_results = sorted(results, key=lambda x: x.buyout_offer, reverse=True)
     
     for i, r in enumerate(sorted_results, 1):
-        competitive_note = "✅ Competitive" if r.multiple >= 8.0 else "⚠️ Below market"
+        competitive_note = "✅ Competitive" if r.multiple >= 0.06 else "⚠️ Below target"
         report += f"**{i}. {r.name}** ({r.location})\n"
-        report += f"- **Recommended Offer:** ${r.buyout_offer:,.0f} ({r.multiple:.1f}x annual rent) {competitive_note}\n"
+        report += f"- **Recommended Offer:** ${r.buyout_offer:,.0f} ({r.multiple*100:.1f}% annualized return) {competitive_note}\n"
         report += f"- Term: {r.term_years} years, Escalator: {r.escalator*100:.1f}%, Risk: {r.risk_tier.title()}\n\n"
     
     report += f"""## Risk Assessment
@@ -220,7 +258,7 @@ The portfolio exhibits balanced risk exposure with {risk_breakdown} distribution
 
 ## Market Positioning
 
-Our average {avg_multiple:.1f}x multiple compares favorably to industry benchmarks. Renewa typically pays 12.5x, while we maintain disciplined pricing focusing on risk-adjusted returns. Deals above 8.0x multiples are immediately competitive in today's market.
+Our average {avg_multiple*100:.1f}% annualized return compares favorably to industry benchmarks, providing solid returns above the {discount_rate*100:.0f}% discount rate. Deals above 6.0% annualized returns are competitive in today's market.
 
 ## Strategic Recommendations
 

@@ -90,8 +90,11 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
         match = re.search(pattern, text_clean)
         if match:
             try:
-                lease_data["annual_rent"] = int(match.group(1).replace(',', ''))
-                break
+                rent_amount = int(match.group(1).replace(',', ''))
+                # Validate reasonable rent range ($1K to $10M annually)
+                if 1000 <= rent_amount <= 10000000:
+                    lease_data["annual_rent"] = rent_amount
+                    break
             except ValueError:
                 continue
     
@@ -150,7 +153,13 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
             pass
 
     if term_candidates:
-        lease_data["term_years"] = max(term_candidates)
+        # Filter out unreasonable terms (typical solar leases: 15-35 years)
+        reasonable_terms = [t for t in term_candidates if 15 <= t <= 35]
+        if reasonable_terms:
+            lease_data["term_years"] = max(reasonable_terms)
+        else:
+            # If no reasonable terms, take the most reasonable from all candidates
+            lease_data["term_years"] = min(term_candidates) if min(term_candidates) <= 50 else None
 
     # Flag suspiciously low term
     if lease_data.get("term_years") and lease_data["term_years"] < 10:
@@ -170,8 +179,11 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
         match = re.search(pattern, text_clean)
         if match:
             try:
-                lease_data["escalator"] = float(match.group(1)) / 100.0
-                break
+                escalator_pct = float(match.group(1))
+                # Validate reasonable escalator range (0.5% to 5% annually)
+                if 0.5 <= escalator_pct <= 5.0:
+                    lease_data["escalator"] = escalator_pct / 100.0
+                    break
             except ValueError:
                 continue
     
