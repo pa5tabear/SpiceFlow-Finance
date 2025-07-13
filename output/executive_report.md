@@ -3,27 +3,27 @@
 
 ## Portfolio Overview
 
-SpiceFlow Finance has evaluated **4 solar ground leases** representing $2,727,285 in aggregate annual rent payments across 1,483 acres. Using a 10% discount rate and 85% of net present value buyout methodology, we recommend total acquisition investments of **$14,992,476**.
+SpiceFlow Finance has evaluated **4 solar ground leases** representing $402,379 in aggregate annual rent payments across 1,483 acres. Using a 10% discount rate and 85% of net present value buyout methodology, we recommend total acquisition investments of **$1,485,478**.
 
 ## Key Financial Metrics
 
 **Average Purchase Multiple:** 4.5x annual rent  
-**Total Portfolio Value:** $17,638,207 (NPV)  
-**Recommended Offers:** $14,992,476 (85% of NPV)  
-**Weighted Term:** 14.4 years average
+**Total Portfolio Value:** $1,747,621 (NPV)  
+**Recommended Offers:** $1,485,478 (85% of NPV)  
+**Weighted Term:** 6.8 years average
 
 ## Individual Lease Recommendations
 
-**1. Rr22-0640 Request For Ordinance Solar Ix Land Lease** (Adams County, Border)
-- **Recommended Offer:** $13,197,702 (9.0x annual rent) ✅ Competitive
-- Term: 25 years, Escalator: 2.0%, Risk: Medium
-
-**2. 8568** (Albany County, Wyoming)
+**1. 8568** (Albany County, Wyoming)
 - **Recommended Offer:** $1,006,408 (3.9x annual rent) ⚠️ Below market
 - Term: 6 years, Escalator: 2.0%, Risk: Medium
 
+**2. Rr22-0640 Request For Ordinance Solar Ix Land Lease** (Adams County, Border)
+- **Recommended Offer:** $389,498 (9.0x annual rent) ✅ Competitive
+- Term: 25 years, Escalator: 2.0%, Risk: Medium
+
 **3. Lanceleaf Solar Land Lease Agreement** (The County, Assessment)
-- **Recommended Offer:** $772,727 (0.8x annual rent) ⚠️ Below market
+- **Recommended Offer:** $73,934 (0.8x annual rent) ⚠️ Below market
 - Term: 1 years, Escalator: 2.5%, Risk: Medium
 
 **4. 25I0955-Ground Lease - Final Version** (The County, Land)
@@ -40,7 +40,7 @@ Our average 4.5x multiple compares favorably to industry benchmarks. Renewa typi
 
 ## Strategic Recommendations
 
-1. **Prioritize larger transactions** (>$6,598,851) for better execution efficiency
+1. **Prioritize larger transactions** (>$503,204) for better execution efficiency
 2. **Focus on low-medium risk tiers** to optimize risk-adjusted returns  
 3. **Consider premium pricing** for exceptional locations or developers
 4. **Execute quickly** on competitive offers to secure pipeline

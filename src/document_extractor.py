@@ -153,12 +153,17 @@ def extract_lease_data_from_text(text: str, filename: str) -> Dict[str, Any]:
                 continue
 
     # Check for rent expressed per acre (capture possibly multiple rates) and choose the highest
-    per_acre_rates = re.findall(r'\$([0-9]+(?:\.[0-9]+)?)\s+per\s+(?:utilized\s+)?acre', text_clean)
-    if per_acre_rates and lease_data.get("acres") and (lease_data.get("annual_rent") is None or lease_data["annual_rent"] <= 1000):
+    per_acre_rates = re.findall(r'\$([0-9,]+(?:\.[0-9]+)?)\s+per\s+(?:utilized\s+)?acre', text_clean)
+    if per_acre_rates and lease_data.get("acres"):
         try:
             rates_float = [float(r.replace(',', '')) for r in per_acre_rates]
             rate = max(rates_float)
-            lease_data["annual_rent"] = int(rate * lease_data["acres"])
+
+            computed_rent = int(rate * lease_data["acres"])
+
+            # Override logic: if annual_rent missing OR far from computed value (>3x difference)
+            if (lease_data["annual_rent"] is None) or (lease_data["annual_rent"] > computed_rent * 3) or (lease_data["annual_rent"] < computed_rent / 3):
+                lease_data["annual_rent"] = computed_rent
         except ValueError:
             pass
     

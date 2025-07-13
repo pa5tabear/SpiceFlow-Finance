@@ -1,9 +1,9 @@
 [
   {
     "name": "Rr22-0640 Request For Ordinance Solar Ix Land Lease",
-    "annual_rent": 1463785,
-    "annual_rent_per_acre": 22871.64,
-    "total_annual_rent": 1463785,
+    "annual_rent": 43200,
+    "annual_rent_per_acre": 675.0,
+    "total_annual_rent": 43200,
     "term_years": 25,
     "escalator": 0.02,
     "risk_tier": "medium",
@@ -11,9 +11,9 @@
     "location": "Adams County, Border",
     "acres": 64.0,
     "developer": null,
-    "present_value": 15526708.41,
-    "undiscounted_value": 46885472.28,
-    "buyout_offer": 13197702.15,
+    "present_value": 458232.46,
+    "undiscounted_value": 1383708.95,
+    "buyout_offer": 389497.59,
     "multiple": 9.0,
     "credit_assessment": {}
   },
@@ -55,9 +55,9 @@
   },
   {
     "name": "Lanceleaf Solar Land Lease Agreement",
-    "annual_rent": 1000000,
-    "annual_rent_per_acre": 27173.91,
-    "total_annual_rent": 1000000,
+    "annual_rent": 95679,
+    "annual_rent_per_acre": 2599.97,
+    "total_annual_rent": 95679,
     "term_years": 1,
     "escalator": 0.025,
     "risk_tier": "medium",
@@ -65,9 +65,9 @@
     "location": "The County, Assessment",
     "acres": 36.8,
     "developer": null,
-    "present_value": 909090.91,
-    "undiscounted_value": 1000000.0,
-    "buyout_offer": 772727.27,
+    "present_value": 86980.91,
+    "undiscounted_value": 95679.0,
+    "buyout_offer": 73933.77,
     "multiple": 0.8,
     "credit_assessment": {}
   }
