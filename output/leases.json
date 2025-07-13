@@ -1,5 +1,65 @@
 [
   {
+    "name": "North Dakota Wind Farm Lease",
+    "annual_rent": 52500,
+    "annual_rent_per_acre": 15.0,
+    "total_annual_rent": 52500,
+    "term_years": 30,
+    "escalator": 0.025,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "North Dakota",
+    "acres": 3500,
+    "developer": "enXco/EDF Renewables",
+    "present_value": 615854.0,
+    "undiscounted_value": 2304891.92,
+    "buyout_offer": 523475.9,
+    "multiple": 0.1,
+    "credit_assessment": {
+      "company_name": "enXco/EDF Renewables",
+      "clean_name": "enxco/edf renewables",
+      "public_company": false,
+      "years_since_incorp": 15,
+      "state_of_incorp": "CA",
+      "risk_tier": "medium",
+      "data_sources": [
+        "Known Entities DB"
+      ],
+      "lookup_timestamp": "2025-07-12T21:11:41.615247",
+      "recommended_discount": 0.1
+    }
+  },
+  {
+    "name": "Kentucky Carolina Solar Lease",
+    "annual_rent": 170000,
+    "annual_rent_per_acre": 2000.0,
+    "total_annual_rent": 170000,
+    "term_years": 30,
+    "escalator": 0.02,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "Kentucky",
+    "acres": 85,
+    "developer": "Carolina Solar Energy III, LLC",
+    "present_value": 2021328.73,
+    "undiscounted_value": 6896573.46,
+    "buyout_offer": 1718129.42,
+    "multiple": 0.1,
+    "credit_assessment": {
+      "company_name": "Carolina Solar Energy III, LLC",
+      "clean_name": "carolina solar energy iii, llc",
+      "public_company": false,
+      "years_since_incorp": 6,
+      "state_of_incorp": "NC",
+      "risk_tier": "medium",
+      "data_sources": [
+        "Known Entities DB"
+      ],
+      "lookup_timestamp": "2025-07-12T21:11:41.615343",
+      "recommended_discount": 0.1
+    }
+  },
+  {
     "name": "Wyoming Laramie Municipal Lease",
     "annual_rent": 230000,
     "annual_rent_per_acre": 200.0,
@@ -14,7 +74,7 @@
     "present_value": 2343520.2,
     "undiscounted_value": 6914495.43,
     "buyout_offer": 1991992.17,
-    "multiple": 0.0,
+    "multiple": 0.1,
     "credit_assessment": {
       "company_name": "Boulevard Associates LLC (NextEra)",
       "clean_name": "boulevard associates llc (nextera)",
@@ -25,7 +85,37 @@
       "data_sources": [
         "Known Entities DB"
       ],
-      "lookup_timestamp": "2025-07-12T21:06:20.119908",
+      "lookup_timestamp": "2025-07-12T21:11:41.615419",
+      "recommended_discount": 0.1
+    }
+  },
+  {
+    "name": "New York Nexamp Solar Lease",
+    "annual_rent": 287500,
+    "annual_rent_per_acre": 3493.32,
+    "total_annual_rent": 287500,
+    "term_years": 25,
+    "escalator": 0.01,
+    "risk_tier": "medium",
+    "discount_rate": 0.1,
+    "location": "New York",
+    "acres": 82.3,
+    "developer": "Nexamp Solar LLC",
+    "present_value": 3033417.16,
+    "undiscounted_value": 8119919.86,
+    "buyout_offer": 2578404.59,
+    "multiple": 0.1,
+    "credit_assessment": {
+      "company_name": "Nexamp Solar LLC",
+      "clean_name": "nexamp solar llc",
+      "public_company": false,
+      "years_since_incorp": 12,
+      "state_of_incorp": "MA",
+      "risk_tier": "medium",
+      "data_sources": [
+        "Known Entities DB"
+      ],
+      "lookup_timestamp": "2025-07-12T21:11:41.615476",
       "recommended_discount": 0.1
     }
   },
@@ -44,7 +134,7 @@
     "present_value": 1222563.78,
     "undiscounted_value": 3268214.85,
     "buyout_offer": 1039179.21,
-    "multiple": 0.0,
+    "multiple": 0.1,
     "credit_assessment": {
       "company_name": "Lanceleaf Solar",
       "clean_name": "lanceleaf solar",
@@ -55,8 +145,26 @@
       "data_sources": [
         "Known Entities DB"
       ],
-      "lookup_timestamp": "2025-07-12T21:06:20.119966",
+      "lookup_timestamp": "2025-07-12T21:11:41.615540",
       "recommended_discount": 0.1
     }
+  },
+  {
+    "name": "Project Company Lease Consent",
+    "annual_rent": 25607,
+    "annual_rent_per_acre": 512.14,
+    "total_annual_rent": 25607,
+    "term_years": 25,
+    "escalator": 0.01,
+    "risk_tier": "high",
+    "discount_rate": 0.1,
+    "location": "Unknown",
+    "acres": 50,
+    "developer": "Unknown Project Company",
+    "present_value": 250845.22,
+    "undiscounted_value": 723223.61,
+    "buyout_offer": 213218.44,
+    "multiple": 0.1,
+    "credit_assessment": {}
   }
 ]

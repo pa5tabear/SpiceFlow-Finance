@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
+import numpy as np
 
 import sys
 sys.path.append('src')
@@ -28,6 +29,51 @@ from lease_valuation import pv_buyout
 from document_extractor import process_document
 from credit_lookup import quick_lookup
 from manual_overrides import get_manual_override, should_skip_document, get_skip_reason
+
+
+def calculate_irr(cash_flows: List[float], max_iterations: int = 1000, tolerance: float = 1e-6) -> float:
+    """
+    Calculate Internal Rate of Return (IRR) for a series of cash flows using Newton-Raphson method.
+    
+    Args:
+        cash_flows: List of cash flows where first value is typically negative (investment)
+                   and subsequent values are positive (returns)
+    
+    Returns:
+        IRR as a decimal (e.g., 0.08 for 8%)
+    """
+    # Newton-Raphson method for IRR calculation
+    rate = 0.1  # Initial guess (10%)
+    
+    for _ in range(max_iterations):
+        # Calculate NPV and its derivative at current rate
+        npv = sum([cf / (1 + rate) ** i for i, cf in enumerate(cash_flows)])
+        npv_derivative = sum([-i * cf / (1 + rate) ** (i + 1) for i, cf in enumerate(cash_flows)])
+        
+        # Check for convergence
+        if abs(npv) < tolerance:
+            return rate
+            
+        # Avoid division by zero
+        if abs(npv_derivative) < tolerance:
+            break
+            
+        # Newton-Raphson update
+        new_rate = rate - npv / npv_derivative
+        
+        # Check for convergence in rate
+        if abs(new_rate - rate) < tolerance:
+            return new_rate
+            
+        rate = new_rate
+        
+        # Keep rate reasonable
+        if rate < -0.99:  # Avoid rates below -99%
+            rate = -0.99
+        elif rate > 10:  # Avoid rates above 1000%
+            rate = 10
+    
+    return rate
 
 
 @dataclass
@@ -137,9 +183,20 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         buyout_pct=0.85
     )
     pv_value = buyout_offer / 0.85
-    # Calculate annualized return instead of simple multiple
-    # IRR approximation: (PV / Investment)^(1/years) - 1
-    annualized_return = (pv_value / buyout_offer) ** (1/valuation_term) - 1
+    
+    # Calculate actual IRR based on cash flows
+    # Generate escalating annual rent payments over the valuation term
+    annual_rents = []
+    current_rent = data['annual_rent']
+    escalator = data.get('escalator', 0.0)
+    
+    for year in range(valuation_term):
+        annual_rents.append(current_rent)
+        current_rent *= (1 + escalator)
+    
+    # IRR cash flows: negative investment followed by positive rent payments
+    cash_flows = [-buyout_offer] + annual_rents
+    irr = calculate_irr(cash_flows)
     
     return LeaseResult(
         name=data.get('name', file_path.stem),
@@ -156,7 +213,7 @@ def process_lease_document(file_path: Path, discount_rate: float = 0.10) -> Opti
         pv_value=pv_value,
         undiscounted_value=undiscounted_value,
         buyout_offer=buyout_offer,
-        multiple=annualized_return,
+        multiple=irr,
         discount_rate=actual_discount_rate,
         credit_data=credit_data
     )
@@ -166,7 +223,7 @@ def generate_summary_table(results: List[LeaseResult], output_path: Path):
     """Generate Markdown summary table."""
     with open(output_path, 'w') as f:
         f.write("# Lease Portfolio Summary\n\n")
-        f.write("| Name | Annual Rent / Acre | Total Annual Rent | Base Term | Renewals | Total Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | Ann. Return |\n")
+        f.write("| Name | Annual Rent / Acre | Total Annual Rent | Base Term | Renewals | Total Term | Escalator | Risk Tier | Discount Rate | Location | Acres | Developer | Total Undiscounted Rent Value | Present Value | **Buyout Offer** | IRR |\n")
         f.write("|------|--------------------|------------------|-----------|----------|------------|-----------|-----------|---------------|----------|-------|-----------|------------------------------|--------------|------------------|----------|\n")
         for r in results:
             # Competitive if annualized return > 6% (reasonable target vs 10% discount rate)
